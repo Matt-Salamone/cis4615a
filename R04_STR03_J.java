@@ -1,39 +1,23 @@
-
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Rule 04: Characters and Strings (STR)
+ * Rule 04: Characters and Strings
  * STR03-J: Do not encode noncharacter data as a string.
- *
- * NONCOMPLIANT EXAMPLE:
- * Arbitrary binary data is converted into a String,
- * causing the original data to become corrupted.
+ * COMPLIANT: Convert numbers to valid decimal text.
  */
 public class R04_STR03_J {
-
     public static void main(String[] args) {
+        BigInteger original = new BigInteger("530500452766");
 
-        // Original number from the professor's example.
-        BigInteger x = new BigInteger("530500452766");
-
-        // Remember the original value for comparison.
-        BigInteger original = x;
-
-        // Convert the number into raw binary data.
-        byte[] byteArray = x.toByteArray();
-
-        // Vulnerability: interpret arbitrary binary data as text.
-        String s = new String(byteArray, StandardCharsets.UTF_8);
-
-        // Convert the text back into binary data.
-        byteArray = s.getBytes(StandardCharsets.UTF_8);
-
-        // Attempt to reconstruct the original number.
-        x = new BigInteger(byteArray);
+        String text = original.toString();
+        byte[] encoded = text.getBytes(StandardCharsets.UTF_8);
+        String decoded = new String(encoded, StandardCharsets.UTF_8);
+        BigInteger recovered = new BigInteger(decoded);
 
         System.out.println("Original value: " + original);
-        System.out.println("Recovered value: " + x);
-        System.out.println("Values match: " + original.equals(x));
+        System.out.println("Recovered value: " + recovered);
+        System.out.println("Values match: "
+                + original.equals(recovered));
     }
 }
