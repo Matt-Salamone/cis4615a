@@ -1,30 +1,30 @@
 import java.util.logging.Logger;
 
 /**
- * Rule 00: Input Validation and Data Sanitization (IDS)
+ * Rule 00: Input Validation and Data Sanitization
  * IDS03-J: Do not log unsanitized user input.
- *
- * NONCOMPLIANT EXAMPLE:
- * User-controlled input is logged without sanitization.
+ * COMPLIANT: Validate usernames before logging.
  */
 public class R00_IDS03_J {
-
     private static final Logger logger =
             Logger.getLogger(R00_IDS03_J.class.getName());
 
+    private static String sanitizeUser(String username) {
+        return username.matches("[A-Za-z0-9]+")
+                ? username : "unauthorized user";
+    }
+
     public static void main(String[] args) {
-
-        // Simulated malicious username containing a newline.
-        String username = "guest\nSEVERE: User login succeeded for: administrator";
-
-        // The actual login attempt failed.
+        String username =
+                "guest\nSEVERE: User login succeeded for: administrator";
         boolean loginSuccessful = false;
 
-        // Vulnerability: username is logged without sanitization.
         if (loginSuccessful) {
-            logger.severe("User login succeeded for: " + username);
+            logger.severe("User login succeeded for: "
+                    + sanitizeUser(username));
         } else {
-            logger.severe("User login failed for: " + username);
+            logger.severe("User login failed for: "
+                    + sanitizeUser(username));
         }
     }
 }
